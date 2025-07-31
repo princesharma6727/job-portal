@@ -3,7 +3,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 
 // Configure axios base URL using environment variable
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://job-portal-backend-1i5t.onrender.com';
 axios.defaults.baseURL = API_BASE_URL;
 
 const AuthContext = createContext();
