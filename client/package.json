@@ -2,6 +2,7 @@
   "name": "rizeos-job-portal-client",
   "version": "1.0.0",
   "private": true,
+  "homepage": ".",
   "dependencies": {
     "@tailwindcss/line-clamp": "^0.4.4",
     "@testing-library/jest-dom": "^5.16.4",
