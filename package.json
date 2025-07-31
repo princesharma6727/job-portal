@@ -1,0 +1,37 @@
+{
+  "name": "rizeos-job-portal",
+  "version": "1.0.0",
+  "description": "Job & Networking Portal - RizeOS Core Team Internship Project",
+  "main": "server/index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "nodemon server/index.js",
+    "client": "cd client && npm start",
+    "build": "cd client && npm run build",
+    "install-all": "npm install && cd client && npm install",
+    "start": "node server/index.js"
+  },
+  "keywords": ["job-portal", "web3", "ai", "networking"],
+  "author": "RizeOS Intern",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^7.5.0",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "multer": "^1.4.5-lts.1",
+    "web3": "^4.0.3",
+    "ethers": "^6.8.0",
+    "natural": "^6.5.0",
+    "compromise": "^14.9.0",
+    "nodemailer": "^6.9.4",
+    "helmet": "^7.0.0",
+    "express-rate-limit": "^6.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1",
+    "concurrently": "^8.2.0"
+  }
+} 
