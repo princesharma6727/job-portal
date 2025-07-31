@@ -2,8 +2,9 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
-// Configure axios base URL
-axios.defaults.baseURL = 'http://localhost:5000';
+// Configure axios base URL using environment variable
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+axios.defaults.baseURL = API_BASE_URL;
 
 const AuthContext = createContext();
 
@@ -34,7 +35,7 @@ export const AuthProvider = ({ children }) => {
     const checkAuth = async () => {
       if (token) {
         try {
-          const response = await axios.get('http://localhost:5000/api/auth/verify');
+          const response = await axios.get('/api/auth/verify');
           setUser(response.data.user);
         } catch (error) {
           console.error('Token verification failed:', error);
@@ -51,7 +52,7 @@ export const AuthProvider = ({ children }) => {
   // Register user
   const register = async (userData) => {
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/register', userData);
+      const response = await axios.post('/api/auth/register', userData);
       const { token: newToken, user: newUser } = response.data;
       
       setToken(newToken);
@@ -74,8 +75,7 @@ export const AuthProvider = ({ children }) => {
       console.log('🔍 Login attempt - Full URL:', `${axios.defaults.baseURL}/api/auth/login`);
       console.log('🔍 Login attempt - Credentials:', credentials);
       
-      // Force the full URL to ensure it goes to the backend
-      const response = await axios.post('http://localhost:5000/api/auth/login', credentials);
+      const response = await axios.post('/api/auth/login', credentials);
       const { token: newToken, user: newUser } = response.data;
       
       setToken(newToken);
