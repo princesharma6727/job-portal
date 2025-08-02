@@ -29,7 +29,10 @@ const corsOptions = {
       'http://localhost:3000',
       'http://localhost:3001',
       'https://rizeos.vercel.app',
-      'https://rizeos-client.vercel.app'
+      'https://rizeos-client.vercel.app',
+      'https://monumental-pavlova-5216d5.netlify.app',
+      'https://*.netlify.app',
+      'https://*.vercel.app'
     ];
     
     // Add FRONTEND_URL to allowed origins if it exists
