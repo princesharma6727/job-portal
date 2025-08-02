@@ -31,6 +31,7 @@ const corsOptions = {
       'https://rizeos.vercel.app',
       'https://rizeos-client.vercel.app',
       'https://monumental-pavlova-5216d5.netlify.app',
+      'https://zippy-paletas-183ad2.netlify.app',
       'https://*.netlify.app',
       'https://*.vercel.app'
     ];
