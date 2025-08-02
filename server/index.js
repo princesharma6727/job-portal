@@ -33,7 +33,8 @@ const corsOptions = {
       'https://monumental-pavlova-5216d5.netlify.app',
       'https://zippy-paletas-183ad2.netlify.app',
       'https://*.netlify.app',
-      'https://*.vercel.app'
+      'https://*.vercel.app',
+      'https://*.onrender.com'
     ];
     
     // Add FRONTEND_URL to allowed origins if it exists
