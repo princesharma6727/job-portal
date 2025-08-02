@@ -87,24 +87,7 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/feed', feedRoutes);
 
-// Root endpoint
-app.get('/', (req, res) => {
-  res.json({
-    message: 'RizeOS Job Portal API',
-    activeStatus: true,
-    error: false,
-    timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development',
-    endpoints: {
-      auth: '/api/auth',
-      jobs: '/api/jobs',
-      payments: '/api/payments',
-      ai: '/api/ai',
-      feed: '/api/feed',
-      health: '/api/health'
-    }
-  });
-});
+
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
