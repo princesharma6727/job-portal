@@ -27,7 +27,10 @@ export const Web3Provider = ({ children }) => {
 
   // Connect to MetaMask
   const connectWallet = useCallback(async () => {
+    console.log('🔗 Attempting to connect wallet...');
+    
     if (!isMetaMaskInstalled()) {
+      console.log('❌ MetaMask not installed');
       // Show a more helpful message with installation link
       toast.error(
         <div>
@@ -46,27 +49,50 @@ export const Web3Provider = ({ children }) => {
       return { success: false, error: 'MetaMask not installed' };
     }
 
+    console.log('✅ MetaMask is installed');
+    
+    // Check if MetaMask is unlocked
+    try {
+      const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+      console.log('🔓 MetaMask unlock status:', accounts.length > 0 ? 'Unlocked' : 'Locked');
+      
+      if (accounts.length === 0) {
+        console.log('🔒 MetaMask is locked, requesting unlock...');
+        toast.info('Please unlock MetaMask first, then try connecting again');
+        return { success: false, error: 'MetaMask is locked' };
+      }
+    } catch (error) {
+      console.log('❌ Error checking MetaMask unlock status:', error);
+    }
+    
     setIsConnecting(true);
     
     try {
+      console.log('🔐 Requesting account access...');
       // Request account access
       const accounts = await window.ethereum.request({
         method: 'eth_requestAccounts',
       });
+
+      console.log('📋 Accounts received:', accounts);
 
       if (accounts.length === 0) {
         throw new Error('No accounts found');
       }
 
       const account = accounts[0];
+      console.log('👤 Selected account:', account);
       
+      console.log('🔧 Creating provider and signer...');
       // Create provider and signer
       const provider = new ethers.BrowserProvider(window.ethereum);
       const signer = await provider.getSigner();
       
+      console.log('🌐 Getting network info...');
       // Get network info
       const network = await provider.getNetwork();
       const chainId = network.chainId.toString();
+      console.log('🔗 Chain ID:', chainId);
 
       setProvider(provider);
       setSigner(signer);
@@ -74,13 +100,28 @@ export const Web3Provider = ({ children }) => {
       setChainId(chainId);
       setIsConnected(true);
 
+      console.log('✅ Wallet connected successfully!');
       toast.success('Wallet connected successfully!');
       return { success: true, account, chainId };
     } catch (error) {
-      console.error('Wallet connection error:', error);
-      const message = error.code === 4001 
-        ? 'Connection rejected by user' 
-        : 'Failed to connect wallet';
+      console.error('❌ Wallet connection error:', error);
+      console.error('❌ Error details:', {
+        code: error.code,
+        message: error.message,
+        stack: error.stack
+      });
+      
+      let message = 'Failed to connect wallet';
+      if (error.code === 4001) {
+        message = 'Connection rejected by user';
+      } else if (error.code === -32002) {
+        message = 'MetaMask is already processing a request. Please check MetaMask.';
+      } else if (error.message.includes('User rejected')) {
+        message = 'Connection rejected by user';
+      } else if (error.message.includes('already pending')) {
+        message = 'MetaMask request already pending. Please check MetaMask.';
+      }
+      
       toast.error(message);
       return { success: false, error: message };
     } finally {

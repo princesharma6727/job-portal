@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useWeb3 } from '../contexts/Web3Context';
+import toast from 'react-hot-toast';
 import { 
   Home, 
   Briefcase, 
@@ -14,8 +15,7 @@ import {
   Search,
   Bell,
   Download,
-  MessageSquare,
-  Target
+  MessageSquare
 } from 'lucide-react';
 
 const Layout = ({ children }) => {
@@ -31,10 +31,21 @@ const Layout = ({ children }) => {
   };
 
   const handleConnectWallet = async () => {
-    const result = await connectWallet();
-    if (result.success) {
-      // Update user's wallet address in backend
-      // This would be handled in the auth context
+    try {
+      console.log('🔗 Layout: Starting wallet connection...');
+      const result = await connectWallet();
+      console.log('🔗 Layout: Wallet connection result:', result);
+      
+      if (result.success) {
+        console.log('✅ Layout: Wallet connected successfully');
+        // Update user's wallet address in backend
+        // This would be handled in the auth context
+      } else {
+        console.log('❌ Layout: Wallet connection failed:', result.error);
+      }
+    } catch (error) {
+      console.error('❌ Layout: Unexpected error during wallet connection:', error);
+      toast.error('Unexpected error during wallet connection');
     }
   };
 
