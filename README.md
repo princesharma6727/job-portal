@@ -9,7 +9,7 @@ A full-stack web application inspired by LinkedIn, Upwork, and AngelList with AI
 - **Job Posting & Discovery**: Create, browse, and filter job listings
 - **Social Feed**: Share career updates and connect with professionals
 - **AI-Powered Matching**: Smart job-candidate matching using NLP
-- **Web3 Integration**: MetaMask wallet connection and blockchain payments
+- **Web3 Integration**: MetaMask wallet connection
 
 ### AI Enhancements
 - **Job ↔ Applicant Matching**: NLP-based match scoring
@@ -18,8 +18,7 @@ A full-stack web application inspired by LinkedIn, Upwork, and AngelList with AI
 
 ### Web3 Features
 - **Wallet Integration**: MetaMask connection
-- **Blockchain Payments**: Platform fees in ETH/MATIC
-- **Smart Contract**: On-chain payment logging (optional)
+
 
 ## 🛠 Tech Stack
 
@@ -115,7 +114,7 @@ EMAIL_PASS=your_email_password
 1. **Register/Login**: Create an account or sign in
 2. **Connect Wallet**: Link your MetaMask wallet
 3. **Complete Profile**: Add skills, bio, and LinkedIn URL
-4. **Post Jobs**: Create job listings with payment
+4. **Post Jobs**: Create job listings
 5. **Discover**: Browse jobs and connect with professionals
 6. **AI Features**: Get personalized recommendations
 

@@ -272,7 +272,7 @@ const Profile = () => {
         bio: formData.bio,
         location: formData.location,
         skills: formData.skills,
-        experience: formData.experience,
+        experience: formData.experience ? formData.experience.toLowerCase() : 'entry',
         company: formData.company,
         website: formData.website,
         linkedinUrl: formData.linkedinUrl,

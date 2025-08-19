@@ -13,7 +13,8 @@ import {
   Clock,
   Download,
   MapPin,
-  DollarSign
+  DollarSign,
+  RefreshCw
 } from 'lucide-react';
 import axios from 'axios';
 
@@ -62,14 +63,14 @@ const Dashboard = () => {
           });
           const allPostedJobs = postedResponse.data.jobs || [];
           
-          // Filter to only count active jobs with completed payments
-          const activeCompletedJobs = allPostedJobs.filter(job => 
-            job.status === 'active' && job.paymentStatus === 'completed'
+          // Filter to only count active jobs
+          const activeJobs = allPostedJobs.filter(job => 
+            job.status === 'active'
           );
           
-          setPostedJobs(activeCompletedJobs);
+          setPostedJobs(activeJobs);
           console.log('All posted jobs count:', allPostedJobs.length);
-          console.log('Active completed jobs count:', activeCompletedJobs.length);
+          console.log('Active jobs count:', activeJobs.length);
         }
       } else {
         // For job seekers: fetch their applied jobs
@@ -105,7 +106,18 @@ const Dashboard = () => {
     if (user) {
       fetchJobs();
     }
-  }, [fetchJobs, user]);
+  }, [user]); // Removed fetchJobs from dependency to prevent excessive calls
+
+  // Temporarily disable auto-refresh to reduce API calls
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     if (user) {
+  //       fetchJobs();
+  //     }
+  //   }, 30000); // Refresh every 30 seconds
+
+  //   return () => clearInterval(interval);
+  // }, [user, fetchJobs]);
 
   const stats = [
     {
@@ -251,8 +263,15 @@ const Dashboard = () => {
 
       {/* Quick Actions */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-        <div className="px-6 py-4 border-b border-gray-200">
+        <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
           <h3 className="text-lg font-medium text-gray-900">Quick Actions</h3>
+          <button
+            onClick={fetchJobs}
+            className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+          >
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Refresh
+          </button>
         </div>
         <div className="p-6">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">

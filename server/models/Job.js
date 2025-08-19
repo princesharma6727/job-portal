@@ -118,17 +118,6 @@ const jobSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
-  paymentStatus: {
-    type: String,
-    enum: ['pending', 'completed', 'failed'],
-    default: 'pending'
-  },
-  paymentTransaction: {
-    hash: String,
-    amount: Number,
-    currency: String,
-    timestamp: Date
-  },
   expiresAt: {
     type: Date,
     default: function() {
@@ -225,7 +214,6 @@ jobSchema.methods.updateApplicationStatus = function(applicationId, status) {
 jobSchema.statics.getActiveJobs = function() {
   return this.find({ 
     status: 'active',
-    paymentStatus: 'completed',
     expiresAt: { $gt: new Date() }
   }).populate('employer', 'name company profileImage');
 };
@@ -234,7 +222,6 @@ jobSchema.statics.getActiveJobs = function() {
 jobSchema.statics.searchJobs = function(query, filters = {}) {
   const searchQuery = {
     status: 'active',
-    paymentStatus: 'completed',
     expiresAt: { $gt: new Date() },
     ...filters
   };
@@ -255,16 +242,6 @@ jobSchema.statics.searchJobs = function(query, filters = {}) {
     .sort({ createdAt: -1 });
 };
 
-// Static method to get jobs by payment status
-jobSchema.statics.getJobsByPaymentStatus = function(paymentStatus, employerId = null) {
-  const query = { paymentStatus };
-  if (employerId) {
-    query.employer = employerId;
-  }
-  
-  return this.find(query)
-    .populate('employer', 'name company profileImage')
-    .sort({ createdAt: -1 });
-};
+
 
 module.exports = mongoose.model('Job', jobSchema); 

@@ -120,7 +120,7 @@ userSchema.methods.comparePassword = async function(candidatePassword) {
 userSchema.methods.getPublicProfile = function() {
   const userObject = this.toObject();
   delete userObject.password;
-  delete userObject.email;
+  // Keep email for profile updates but remove other sensitive data
   delete userObject.preferences;
   return userObject;
 };

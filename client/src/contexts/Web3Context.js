@@ -165,48 +165,7 @@ export const Web3Provider = ({ children }) => {
     }
   };
 
-  // Send payment transaction
-  const sendPayment = async (toAddress, amount, currency = 'ETH') => {
-    if (!isConnected || !signer) {
-      toast.error('Please connect your wallet first');
-      return { success: false, error: 'Wallet not connected' };
-    }
 
-    try {
-      // Convert amount to wei (assuming ETH)
-      const amountInWei = ethers.parseEther(amount.toString());
-      
-      // Create transaction
-      const tx = {
-        to: toAddress,
-        value: amountInWei,
-      };
-
-      // Send transaction
-      const transaction = await signer.sendTransaction(tx);
-      
-      toast.success('Transaction sent! Waiting for confirmation...');
-      
-      // Wait for confirmation
-      const receipt = await transaction.wait();
-      
-      toast.success('Payment confirmed!');
-      
-      return {
-        success: true,
-        transactionHash: receipt.hash,
-        blockNumber: receipt.blockNumber,
-        gasUsed: receipt.gasUsed.toString(),
-      };
-    } catch (error) {
-      console.error('Payment error:', error);
-      const message = error.code === 4001 
-        ? 'Transaction rejected by user' 
-        : 'Payment failed';
-      toast.error(message);
-      return { success: false, error: message };
-    }
-  };
 
   // Get account balance
   const getBalance = async () => {
@@ -277,7 +236,7 @@ export const Web3Provider = ({ children }) => {
     connectWallet,
     disconnectWallet,
     switchNetwork,
-    sendPayment,
+
     getBalance,
   };
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, MapPin, Clock, DollarSign, Briefcase } from 'lucide-react';
+import { Search, MapPin, Clock, DollarSign, Briefcase, RefreshCw } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import MatchScore from '../components/MatchScore';
 import axios from 'axios';
@@ -21,36 +21,60 @@ const Jobs = () => {
     fetchJobs();
   }, []);
 
-  const fetchJobs = async () => {
+  // Refresh jobs when user changes (after job posting)
+  useEffect(() => {
+    if (user) {
+      fetchJobs();
+    }
+  }, [user]);
+
+  const fetchJobs = async (retryCount = 0) => {
     try {
+      console.log('🔍 Fetching jobs...');
       const response = await axios.get('/api/jobs');
       const jobsData = response.data.jobs || [];
+      console.log('✅ Jobs fetched:', jobsData.length, 'jobs');
+      console.log('📋 All job titles:', jobsData.map(j => j.title));
+      console.log('📋 All job IDs:', jobsData.map(j => j._id));
       setJobs(jobsData);
       
-      // Calculate match scores for each job if user is logged in
-      if (user) {
-        const scores = {};
-        for (const job of jobsData) {
-          try {
-            console.log('Calculating match score for job:', job._id);
-            const scoreResponse = await axios.post('/api/ai/match-score', {
-              jobId: job._id
-            }, {
-              headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-              }
-            });
-            console.log('Match score response:', scoreResponse.data);
-            scores[job._id] = scoreResponse.data.matchScore;
-          } catch (error) {
-            console.error('Error calculating match score for job:', job._id, error);
-            scores[job._id] = 0;
-          }
-        }
-        setMatchScores(scores);
-      }
+      // Temporarily disable match score calculation to reduce API calls
+      // if (user) {
+      //   const scores = {};
+      //   for (const job of jobsData) {
+      //     try {
+      //       console.log('Calculating match score for job:', job._id);
+      //       const scoreResponse = await axios.post('/api/ai/match-score', {
+      //         jobId: job._id
+      //       }, {
+      //         headers: {
+      //           'Authorization': `Bearer ${localStorage.getItem('token')}`
+      //         }
+      //       });
+      //       console.log('Match score response:', scoreResponse.data);
+      //       scores[job._id] = scoreResponse.data.matchScore;
+      //     } catch (error) {
+      //       console.error('Error calculating match score for job:', job._id, error);
+      //       scores[job._id] = 0;
+      //     }
+      //   }
+      //   setMatchScores(scores);
+      // }
     } catch (error) {
       console.error('Error fetching jobs:', error);
+      
+      // Handle rate limiting errors with retry logic
+      if (error.response?.status === 429 && retryCount < 3) {
+        console.error('Rate limit exceeded. Retrying in 2 seconds...');
+        setTimeout(() => {
+          fetchJobs(retryCount + 1);
+        }, 2000);
+        return;
+      }
+      
+      if (error.response?.status === 429) {
+        console.error('Rate limit exceeded after retries. Please wait a moment and try again.');
+      }
     } finally {
       setLoading(false);
     }
@@ -67,6 +91,12 @@ const Jobs = () => {
     
     return matchesSearch && matchesType && matchesExperience && matchesLocation;
   });
+
+  // Debug logging
+  console.log('🔍 Total jobs from API:', jobs.length);
+  console.log('🔍 Filtered jobs:', filteredJobs.length);
+  console.log('🔍 Search term:', searchTerm);
+  console.log('🔍 Filters:', filters);
 
   if (loading) {
     return (
@@ -95,6 +125,16 @@ const Jobs = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Search and Filters */}
         <div className="bg-white rounded-lg shadow-sm border p-6 mb-8">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-lg font-semibold text-gray-900">Search Jobs</h2>
+            <button
+              onClick={fetchJobs}
+              className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+            >
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Refresh
+            </button>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {/* Search */}
             <div className="md:col-span-2">

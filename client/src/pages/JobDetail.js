@@ -172,15 +172,6 @@ const JobDetail = () => {
               </div>
 
               <div className="flex items-center space-x-4">
-                {/* Payment button for pending payment jobs */}
-                {job.status === 'pending_payment' && user?.isEmployer && job.employer === user._id && (
-                  <button
-                    onClick={() => navigate(`/payment/${job._id}`)}
-                    className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
-                  >
-                    Pay Now
-                  </button>
-                )}
                 
                 {hasApplied ? (
                   <div className="flex items-center space-x-2 text-green-600">

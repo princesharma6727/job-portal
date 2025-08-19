@@ -172,10 +172,9 @@ const PostJob = () => {
       
       console.log('✅ Job posted successfully:', response.data);
 
-      toast.success('Job posted successfully! Redirecting to payment...');
+      toast.success('Job posted successfully!');
       
-      // Redirect to payment page with the job ID
-      navigate(`/payment/${response.data.job._id}`);
+      navigate('/dashboard');
     } catch (error) {
       console.error('❌ Error creating job:', error);
       console.error('❌ Error response:', error.response?.data);

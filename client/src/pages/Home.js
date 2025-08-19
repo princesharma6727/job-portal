@@ -32,7 +32,7 @@ const Home = () => {
     {
       icon: Zap,
       title: 'Web3 Integration',
-      description: 'Blockchain payments and smart contracts for secure transactions.'
+      description: 'Blockchain wallet integration for secure connections.'
     },
     {
       icon: Shield,

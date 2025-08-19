@@ -7,7 +7,6 @@ require('dotenv').config();
 
 const authRoutes = require('./routes/auth');
 const jobRoutes = require('./routes/jobs');
-const paymentRoutes = require('./routes/payments');
 const aiRoutes = require('./routes/ai');
 const feedRoutes = require('./routes/feed');
 
@@ -66,10 +65,16 @@ app.options('*', cors(corsOptions));
 // Trust proxy for rate limiting
 app.set('trust proxy', 1);
 
-// Rate limiting
+// Rate limiting - increased to prevent 429 errors
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100 // limit each IP to 100 requests per windowMs
+  max: 2000, // limit each IP to 2000 requests per windowMs (increased from 1000)
+  message: {
+    error: 'Too many requests, please try again later.',
+    retryAfter: '15 minutes'
+  },
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
 app.use(limiter);
 
@@ -88,7 +93,6 @@ mongoose.connect(process.env.MONGODB_URI, {
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/jobs', jobRoutes);
-app.use('/api/payments', paymentRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/feed', feedRoutes);
 

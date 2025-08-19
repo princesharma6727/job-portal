@@ -11,7 +11,7 @@ import Jobs from './pages/Jobs';
 import JobDetail from './pages/JobDetail';
 import PostJob from './pages/PostJob';
 import Profile from './pages/Profile';
-import Payment from './pages/Payment';
+
 import Feed from './pages/Feed';
 import GTMStrategy from './pages/GTMStrategy';
 import NotFound from './pages/NotFound';
@@ -114,16 +114,7 @@ function AppRoutes() {
           </ProtectedRoute>
         } 
       />
-      <Route 
-        path="/payment/:jobId" 
-        element={
-          <ProtectedRoute>
-            <Layout>
-              <Payment />
-            </Layout>
-          </ProtectedRoute>
-        } 
-      />
+
       
       {/* 404 Route */}
       <Route path="*" element={<NotFound />} />

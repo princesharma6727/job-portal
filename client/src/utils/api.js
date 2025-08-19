@@ -25,9 +25,19 @@ api.interceptors.request.use(
 
 // Response interceptor for error handling
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    console.log('✅ API Response:', response.config.url, response.status);
+    return response;
+  },
   (error) => {
-    console.error('API Error:', error);
+    console.error('❌ API Error:', error.config?.url, error.response?.status, error.message);
+    
+    // Handle rate limiting errors
+    if (error.response?.status === 429) {
+      console.error('Rate limit exceeded. Please wait before making more requests.');
+      // You could show a user-friendly toast message here
+    }
+    
     return Promise.reject(error);
   }
 );

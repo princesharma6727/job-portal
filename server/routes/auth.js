@@ -110,7 +110,7 @@ router.get('/me', auth, async (req, res) => {
 // Update user profile
 router.put('/profile', auth, async (req, res) => {
   try {
-    console.log('Profile update request body:', req.body);
+    console.log('Profile update request body:', JSON.stringify(req.body, null, 2));
     
     const {
       name,
@@ -138,17 +138,24 @@ router.put('/profile', auth, async (req, res) => {
       linkedinUrl: user.linkedinUrl
     });
 
-    // Update fields
-    if (name) user.name = name;
+    // Update fields with validation
+    if (name !== undefined) user.name = name;
     if (bio !== undefined) user.bio = bio;
     if (linkedinUrl !== undefined) user.linkedinUrl = linkedinUrl;
-    if (skills) user.skills = skills;
+    if (skills !== undefined) user.skills = Array.isArray(skills) ? skills : [];
     if (location !== undefined) user.location = location;
-    if (experience) user.experience = experience;
+    if (experience !== undefined) {
+      // Convert experience to lowercase to match enum values
+      const expLower = experience.toLowerCase();
+      if (expLower === 'senior') user.experience = 'senior';
+      else if (expLower === 'mid' || expLower === 'middle') user.experience = 'mid';
+      else if (expLower === 'executive') user.experience = 'executive';
+      else user.experience = 'entry';
+    }
     if (company !== undefined) user.company = company;
     if (website !== undefined) user.website = website;
-    if (socialLinks) user.socialLinks = socialLinks;
-    if (preferences) user.preferences = preferences;
+    if (socialLinks !== undefined) user.socialLinks = socialLinks;
+    if (preferences !== undefined) user.preferences = preferences;
 
     await user.save();
 
@@ -167,6 +174,20 @@ router.put('/profile', auth, async (req, res) => {
     });
   } catch (error) {
     console.error('Update profile error:', error);
+    
+    // Handle validation errors
+    if (error.name === 'ValidationError') {
+      const validationErrors = Object.keys(error.errors).map(key => ({
+        field: key,
+        message: error.errors[key].message
+      }));
+      console.error('❌ Validation errors:', validationErrors);
+      return res.status(400).json({ 
+        error: 'Validation failed', 
+        details: validationErrors 
+      });
+    }
+    
     res.status(500).json({ error: 'Failed to update profile' });
   }
 });
